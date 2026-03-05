@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Lab - Synnefo Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --brand-primary: #0f172a;
+            --brand-accent: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            overflow: hidden;
+        }
+
+        .mono { font-family: 'JetBrains+Mono', monospace; }
+
+        .sidebar-item.active {
+            background-color: #f1f5f9;
+            border-right: 4px solid var(--brand-accent);
+            color: var(--brand-accent);
+        }
+
+        .task-card {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="flex h-screen w-screen bg-slate-50">
+
+    <!-- Sidebar -->
+    <aside class="w-80 bg-white border-r border-slate-200 flex flex-col flex-shrink-0">
+        <div class="p-6 border-b border-slate-100">
+            <h1 class="text-xl font-black tracking-tighter uppercase text-slate-900">Synnefo Solutions</h1>
+            <p class="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-widest">Practical Exam Console</p>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4">
+            <!-- Section A -->
+            <div class="px-6 mb-6">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 tracking-widest">Section A: Foundations</h3>
+                <div class="space-y-1">
+                    <button onclick="showTask(1)" id="nav-1" class="sidebar-item w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all flex justify-between items-center group">
+                        <span>Q1. Data Extraction</span>
+                    </button>
+                    <button onclick="showTask(2)" id="nav-2" class="sidebar-item w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all flex justify-between items-center group">
+                        <span>Q2. Find & Ownership</span>
+                    </button>
+                    <button onclick="showTask(3)" id="nav-3" class="sidebar-item w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all flex justify-between items-center group">
+                        <span>Q3. Identity Policy</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section B -->
+            <div class="px-6 mb-6">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 tracking-widest">Section B: Administration</h3>
+                <div class="space-y-1">
+                    <button onclick="showTask(4)" id="nav-4" class="sidebar-item w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all flex justify-between items-center group">
+                        <span>Q4. Sed & Awk</span>
+                    </button>
+                    <button onclick="showTask(5)" id="nav-5" class="sidebar-item w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all flex justify-between items-center group">
+                        <span>Q5. Storage (LVM)</span>
+                    </button>
+                    <button onclick="showTask(6)" id="nav-6" class="sidebar-item w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all flex justify-between items-center group">
+                        <span>Q6. Networking</span>
+                    </button>
+                    <button onclick="showTask(7)" id="nav-7" class="sidebar-item w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all flex justify-between items-center group">
+                        <span>Q7. ACL Management</span>
+                    </button>
+                    <button onclick="showTask(8)" id="nav-8" class="sidebar-item w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all flex justify-between items-center group">
+                        <span>Q8. Task Scheduling</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section C -->
+            <div class="px-6 mb-6">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase mb-3 tracking-widest">Section C: Scenario Logic</h3>
+                <div class="space-y-1">
+                    <button onclick="showTask(9)" id="nav-9" class="sidebar-item w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all flex justify-between items-center group">
+                        <span>Q9. Bash Automation</span>
+                    </button>
+                    <button onclick="showTask(10)" id="nav-10" class="sidebar-item w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all flex justify-between items-center group">
+                        <span>Q10. Distributed Content</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Examiner Info -->
+        <div class="p-6 bg-slate-50 border-t border-slate-200">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Authorized Examiner</p>
+            <p class="text-sm font-bold text-slate-900">Sreejith M S</p>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0">
+        
+        <!-- Top Bar -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8">
+            <div class="flex items-center gap-6">
+                <h2 class="text-sm font-bold text-slate-900 uppercase tracking-widest">Practical Laboratory Examination</h2>
+            </div>
+
+            <div class="flex items-center gap-8">
+                <div class="text-right">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Remaining Time</p>
+                    <p id="timer" class="text-xl font-black mono text-slate-900">02:00:00</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Lab Area -->
+        <main id="task-container" class="flex-1 overflow-y-auto p-12 flex items-center justify-center">
+            <div id="active-task" class="max-w-3xl w-full bg-white border border-slate-200 shadow-xl rounded-2xl overflow-hidden task-card">
+                <div id="task-header" class="bg-slate-900 px-8 py-6 flex justify-between items-center text-white">
+                    <div>
+                        <span id="task-section" class="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-1">Section A</span>
+                        <h2 id="task-title" class="text-2xl font-bold">Lab Objective</h2>
+                    </div>
+                    <div class="text-right">
+                        <span id="task-marks" class="text-lg font-black bg-white/10 px-3 py-1 rounded">5 MARKS</span>
+                    </div>
+                </div>
+                
+                <div class="p-10 min-h-[300px]">
+                    <div id="task-description" class="text-slate-600 leading-relaxed mb-8 text-lg">
+                        Select a task from the sidebar to begin the assessment.
+                    </div>
+                </div>
+
+                <div class="px-8 py-4 bg-slate-50 border-t border-slate-100 flex justify-between">
+                    <button onclick="prevTask()" class="text-sm font-bold text-slate-400 hover:text-slate-900 transition-colors">← Previous Task</button>
+                    <button onclick="nextTask()" class="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors">Next Task →</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Lab Footer -->
+        <div id="instructions-bar" class="bg-amber-50 border-t border-amber-200 px-8 py-3 flex justify-between items-center no-print">
+            <p class="text-[10px] text-amber-800 font-bold uppercase tracking-wide">
+                <span class="mr-2 inline-block">⚠️</span> Lab Persistence: All configurations must survive a system reboot.
+            </p>
+            <div class="flex gap-4">
+                <span class="text-[10px] text-amber-800 font-bold uppercase">Date: <span class="font-bold">03-Jan-2026</span></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tasks = [
+            { id: 1, section: 'Section A', title: 'Search and Data Extraction', marks: 5, desc: 'Identify all files in <code class="mono bg-slate-100 px-1">/usr/share/doc</code> that contain the word "License" and save the full path list to <code class="mono bg-slate-100 px-1">/root/licenses.txt</code>.' },
+            { id: 2, section: 'Section A', title: 'Advanced Discovery & Ownership', marks: 5, desc: 'Locate all files under <code class="mono bg-slate-100 px-1">/var</code> owned by user <code class="mono bg-slate-100 px-1">root</code> with a size exceeding 50MB. Update their group ownership to <code class="mono bg-slate-100 px-1">adm</code> while preserving current access modes.' },
+            { id: 3, section: 'Section A', title: 'Identity & Security Policy', marks: 10, desc: 'Initialize user <code class="mono bg-slate-100 px-1">operator_x</code>. Implement a policy where passwords must rotate every 30 days with a 5-day warning period. Ensure the account expires on December 31, 2025.' },
+            { id: 4, section: 'Section B', title: 'Stream Processing with Sed & Awk', marks: 10, desc: 'Duplicate <code class="mono bg-slate-100 px-1">/etc/hosts</code> to <code class="mono bg-slate-100 px-1">/root/hosts_test</code>. Utilize <code class="mono bg-slate-100 px-1">sed</code> to replace all "localhost" instances with "server.internal". Subsequently, use <code class="mono bg-slate-100 px-1">awk</code> to extract the 1st and 3rd columns of <code class="mono bg-slate-100 px-1">/etc/passwd</code> for users with a UID > 1000.' },
+            { id: 5, section: 'Section B', title: 'Logical Volume Management', marks: 10, desc: 'Initialize disk <code class="mono bg-slate-100 px-1">/dev/sdb</code> (10GB). Create a Volume Group <code class="mono bg-slate-100 px-1">vg_data</code> and a Logical Volume <code class="mono bg-slate-100 px-1">lv_storage</code> (4GB). Apply an XFS filesystem and mount to <code class="mono bg-slate-100 px-1">/mnt/app_data</code> using the UUID for persistence.' },
+            { id: 6, section: 'Section B', title: 'Networking & Service Integrity', marks: 10, desc: 'Assign static IP <code class="mono bg-slate-100 px-1">192.168.1.50/24</code> to the primary interface. Activate the <code class="mono bg-slate-100 px-1">firewalld</code> service and ensure <code class="mono bg-slate-100 px-1">sshd</code> is operational and configured for automatic startup.' },
+            { id: 7, section: 'Section B', title: 'Advanced Permissions & ACLs', marks: 10, desc: 'Provision directory <code class="mono bg-slate-100 px-1">/opt/finance</code>. Apply ACLs so that group <code class="mono bg-slate-100 px-1">auditors</code> have read-only access, while user <code class="mono bg-slate-100 px-1">manager_y</code> has full control. Enable inheritance for new child objects.' },
+            { id: 8, section: 'Section B', title: 'Automated Task Scheduling', marks: 10, desc: 'Configure a cron job to synchronize <code class="mono bg-slate-100 px-1">/var/www/html</code> to <code class="mono bg-slate-100 px-1">/backup/web/</code> every Sunday at 23:45. Schedule a one-time system maintenance update for tomorrow at 02:00 AM using <code class="mono bg-slate-100 px-1">at</code>.' },
+            { id: 9, section: 'Section C', title: 'Scripted Automation & Health Monitoring', marks: 15, desc: 'Develop a bash script <code class="mono bg-slate-100 px-1">/root/disk_monitor.sh</code> that performs the following logic:<br><br>1. Evaluate the current disk utilization percentage of the root partition.<br>2. If utilization exceeds 80%, identify the five largest files (>100MB) in <code class="mono">/var/log</code>.<br>3. If utilization is below 80%, log "Disk Status: Healthy" with a timestamp to <code class="mono">/root/disk_report.log</code>.' },
+            { id: 10, section: 'Section C', title: 'Distributed Content Hosting', marks: 15, desc: 'Execute the following multi-service configuration:<br><br>1. Export <code class="mono">/shared_web</code> via NFS to the <code class="mono">192.168.1.0/24</code> subnet with RW/Sync permissions.<br>2. Mount said export to <code class="mono">/var/www/nfs_content</code> persistently using the <code class="mono">_netdev</code> option.<br>3. Deploy an Nginx Virtual Host for <code class="mono">app.institute.com</code> utilizing the NFS mount as the document root on port 80.' }
+        ];
+
+        let currentTaskIdx = 0;
+
+        function showTask(id) {
+            const task = tasks.find(t => t.id === id);
+            currentTaskIdx = id - 1;
+            
+            document.getElementById('task-section').textContent = task.section;
+            document.getElementById('task-title').textContent = task.title;
+            document.getElementById('task-marks').textContent = task.marks + ' MARKS';
+            document.getElementById('task-description').innerHTML = task.desc;
+
+            document.querySelectorAll('.sidebar-item').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('nav-' + id).classList.add('active');
+        }
+
+        function nextTask() { if (currentTaskIdx < 9) showTask(currentTaskIdx + 2); }
+        function prevTask() { if (currentTaskIdx > 0) showTask(currentTaskIdx); }
+
+        let timeLeft = 7200;
+        const timerObj = document.getElementById('timer');
+        setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                const h = Math.floor(timeLeft / 3600);
+                const m = Math.floor((timeLeft % 3600) / 60);
+                const s = timeLeft % 60;
+                timerObj.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                if (timeLeft <= 600) timerObj.style.color = '#ef4444';
+            }
+        }, 1000);
+
+        window.onload = () => {
+            showTask(1);
+        };
+    </script>
+</body>
+</html>
