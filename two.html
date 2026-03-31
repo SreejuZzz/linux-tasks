@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux Mock Exam | Synnefo Solutions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --accent: #22d3ee;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- Header & Banner --- */
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .banner-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .meta-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* --- Layout --- */
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            max-width: 1200px;
+            margin: 2rem auto;
+            gap: 2rem;
+            padding: 0 1rem;
+        }
+
+        /* --- Sidebar Navigation --- */
+        nav {
+            position: sticky;
+            top: 120px;
+            height: fit-content;
+        }
+
+        .nav-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.3s;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* --- Content Area --- */
+        section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 130px;
+        }
+
+        .section-header {
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--accent);
+            padding-left: 1rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        .q-num {
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .mark-badge {
+            float: right;
+            font-size: 0.7rem;
+            background: rgba(99, 102, 241, 0.2);
+            padding: 2px 8px;
+            border-radius: 20px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .interactive-area {
+            margin-top: 1rem;
+            display: none;
+            padding: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            border-left: 2px solid var(--secondary);
+        }
+
+        button.reveal-btn {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        button.reveal-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        ul {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        li::before {
+            content: "•";
+            color: var(--accent);
+            margin-right: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="banner-title">Synnefo Solutions</div>
+    <div class="meta-info">
+        <span><strong>Examiner:</strong> Sreejith M S</span>
+        <span>|</span>
+        <span><strong>Subject:</strong> Linux Administration</span>
+    </div>
+</header>
+
+<div class="container">
+    <nav>
+        <div class="nav-card">
+            <a href="#1mark" class="nav-link active">1 Mark Questions</a>
+            <a href="#3mark" class="nav-link">3 Mark Questions</a>
+            <a href="#5mark" class="nav-link">5 Mark Questions</a>
+        </div>
+    </nav>
+
+    <main>
+        <section id="1mark">
+            <div class="section-header">
+                <h2>1 Mark Questions</h2>
+                <small>Answer any 6 or 8 as per instruction</small>
+            </div>
+
+            <div class="question-card">
+                <span class="mark-badge">1 Mark</span>
+                <p><span class="q-num">Q1.</span> What does the command pwd do?</p>
+                <button class="reveal-btn" onclick="toggle(this)">Toggle Hint</button>
+                <div class="interactive-area">Print Working Directory - displays the current path.</div>
+            </div>
+
+            <div class="question-card">
+                <span class="mark-badge">1 Mark</span>
+                <p><span class="q-num">Q2.</span> Which command is used to list files and directories, including hidden ones?</p>
+                <button class="reveal-btn" onclick="toggle(this)">Toggle Hint</button>
+                <div class="interactive-area">ls -a</div>
+            </div>
+
+            <div class="question-card">
+                <span class="mark-badge">1 Mark</span>
+                <p><span class="q-num">Q3.</span> What is the difference between absolute and relative paths?</p>
+                <button class="reveal-btn" onclick="toggle(this)">Toggle Hint</button>
+                <div class="interactive-area">Absolute starts from root (/); Relative starts from current location.</div>
+            </div>
+
+            <div class="question-card">
+                <span class="mark-badge">1 Mark</span>
+                <p><span class="q-num">Q4.</span> How do you change the permissions of a file to give the owner read, write, and execute permissions, while giving no permissions to group and others?</p>
+                <button class="reveal-btn" onclick="toggle(this)">Toggle Hint</button>
+                <div class="interactive-area">chmod 700 filename</div>
+            </div>
+
+            <div class="question-card">
+                <span class="mark-badge">1 Mark</span>
+                <p><span class="q-num">Q5.</span> What command would you use to view the last 20 lines of a file called log.txt?</p>
+                <button class="reveal-btn" onclick="toggle(this)">Toggle Hint</button>
+                <div class="interactive-area">tail -n 20 log.txt</div>
+            </div>
+
+            <div class="question-card">
+                <span class="mark-badge">1 Mark</span>
+                <p><span class="q-num">Q6.</span> On RHEL, which command is used to manage services start, stop, enable, or check the status of a service?</p>
+                <button class="reveal-btn" onclick="toggle(this)">Toggle Hint</button>
+                <div class="interactive-area">systemctl</div>
+            </div>
+
+            <div class="question-card">
+                <span class="mark-badge">1 Mark</span>
+                <p><span class="q-num">Q7.</span> On RHEL, what command installs the Nginx web server?</p>
+                <button class="reveal-btn" onclick="toggle(this)">Toggle Hint</button>
+                <div class="interactive-area">sudo dnf install nginx OR sudo yum install nginx</div>
+            </div>
+
+            <div class="question-card">
+                <span class="mark-badge">1 Mark</span>
+                <p><span class="q-num">Q8.</span> What is the difference between a hard link and a soft (symbolic) link?</p>
+                <button class="reveal-btn" onclick="toggle(this)">Toggle Hint</button>
+                <div class="interactive-area">Hard links point to the inode; Soft links point to the filename.</div>
+            </div>
+        </section>
+
+        <section id="3mark">
+            <div class="section-header">
+                <h2>3 Mark Questions</h2>
+                <small>Intermediate Concepts & Commands</small>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q9.</span> How would you find all log files under /var that were modified in the last 7 days?</p>
+                <button class="reveal-btn" onclick="toggle(this)">Toggle Hint</button>
+                <div class="interactive-area">find /var -name "*.log" -mtime -7</div>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q10.</span> Explain what a zombie process is and how it occurs.</p>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q11.</span> How would you check which process is listening on port 8080?</p>
+                <button class="reveal-btn" onclick="toggle(this)">Toggle Hint</button>
+                <div class="interactive-area">ss -tunlp | grep 8080 OR netstat -tunlp | grep 8080</div>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q12.</span> What is SELinux? What are the three SELinux modes, and how do you check the current mode on a RHEL system?</p>
+                <button class="reveal-btn" onclick="toggle(this)">Toggle Hint</button>
+                <div class="interactive-area">Modes: Enforcing, Permissive, Disabled. Check with: getenforce</div>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q13.</span> Where is the main Nginx configuration file located on RHEL? What is the purpose of the include directive in that file?</p>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q14.</span> How do you enable and start the Nginx service on RHEL, and how do you verify it is running?</p>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q15.</span> How do you set up SSH key-based authentication on a RHEL server? List the steps involved.</p>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q16.</span> Create a user called "webadmin" on RHEL, set a password, and add them to the wheel group. Verify the group membership.</p>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q17.</span> Write a command to display only the lines containing the word error (case-insensitive) from /var/log/nginx/error.log.</p>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q18.</span> Check the current status of the sshd service. If it is stopped, start it and enable it to start on boot.</p>
+            </div>
+        </section>
+
+        <section id="5mark">
+            <div class="section-header">
+                <h2>5 Mark Questions</h2>
+                <small>Practical Scenarios (Answer any 4)</small>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q1.</span> Install NGINX on your Alma Linux Server, then do the following:</p>
+                <ul>
+                    <li>Start and enable Nginx</li>
+                    <li>Allow HTTP and HTTPS through firewalld permanently</li>
+                    <li>Reload the firewall and verify the rules</li>
+                </ul>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q2.</span> Create a new Nginx virtual host configuration for testsite.local that:</p>
+                <ul>
+                    <li>Listens on port 80</li>
+                    <li>Serves files from /var/www/testsite</li>
+                    <li>Logs access to /var/log/nginx/testsite_access.log</li>
+                </ul>
+                <p>Then test the config and reload Nginx.</p>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q3.</span> A new developer needs SSH access to your RHEL server. Do the following:</p>
+                <ul>
+                    <li>Create a user devuser</li>
+                    <li>Set up SSH key-based authentication for that user</li>
+                    <li>Disable password authentication for that user only</li>
+                </ul>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q4.</span> Using journalctl, display Nginx logs from the last 1 hour and filter only lines with error. Save the output to /tmp/nginx_errors.txt.</p>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q5.</span> Your RHEL server has the following requirement:</p>
+                <ul>
+                    <li>SSH must only be accessible from your local machine</li>
+                    <li>All other SSH connections must be dropped</li>
+                </ul>
+            </div>
+
+            <div class="question-card">
+                <p><span class="q-num">Q6.</span> Harden the SSH configuration on a RHEL server by editing sshd_config to:</p>
+                <ul>
+                    <li>Disable root login</li>
+                    <li>Disable password authentication</li>
+                    <li>Allow only the user devuser</li>
+                    <li>Change the default port to 2222</li>
+                    <li>Set idle timeout to 5 minutes</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+</div>
+
+<footer>
+    <p>&copy; 2024 Synnefo Solutions. Designed for Excellence.</p>
+</footer>
+
+<script>
+    function toggle(btn) {
+        const area = btn.nextElementSibling;
+        if (area.style.display === "block") {
+            area.style.display = "none";
+            btn.innerText = "Show Hint";
+        } else {
+            area.style.display = "block";
+            btn.innerText = "Hide Hint";
+        }
+    }
+
+    // Active link highlighting on scroll
+    window.addEventListener('scroll', () => {
+        let current = "";
+        const sections = document.querySelectorAll('section');
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 150) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        document.querySelectorAll('.nav-link').forEach(a => {
+            a.classList.remove('active');
+            if (a.getAttribute('href').includes(current)) {
+                a.classList.add('active');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
