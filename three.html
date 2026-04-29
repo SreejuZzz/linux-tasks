@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RHCE Practical Exam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Ocean Blue (Sky) with Sunset Orange Accent -->
+    <!-- Application Structure Plan: The SPA utilizes a three-part tabbed navigation (Part A, B, C) to segment the exam content by increasing difficulty. This structure supports a focused user experience, allowing students to concentrate on one section at a time. An initial dashboard-style overview, featuring key exam metrics and a donut chart, provides immediate context and a visual representation of mark distribution. Individual questions are presented within distinct cards, enhancing readability and logical grouping. This interactive, non-linear design improves content accessibility and user engagement compared to a static document. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Mark allocation for each part (20, 40, 40). Goal: Provide a quick visual summary of the exam's structural weighting. Viz/Presentation Method: Donut Chart. Interaction: Hovering over segments displays the part name and its allocated marks. Justification: A donut chart efficiently communicates proportional data, aiding students in prioritizing their efforts based on mark distribution. Library/Method: Chart.js (Canvas).
+        - Report Info: Theory and practical questions across three difficulty levels. Goal: Present each question clearly and distinctly, organized by its part. Viz/Presentation Method: Styled cards with descriptive headings and task lists. Interaction: Tab buttons dynamically control which set of question cards is visible. Justification: Cards provide clear visual boundaries for each question, improving scannability. Tabbed navigation allows for a clean, uncluttered interface, enabling users to focus on the relevant section. Library/Method: Vanilla JS for tab switching.
+        - Report Info: Technical topics for practical questions (File System, Users, Network, LVM, Cron, etc.). Goal: Add quick visual cues to the topic of each question. Viz/Presentation Method: Unicode emoji characters. Interaction: None. Justification: Emojis enhance visual appeal and topic recognition without requiring external image assets, contributing to a lightweight and engaging UI. Library/Method: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 280px;
+            width: 280px;
+        }
+    </style>
+</head>
+<body class="bg-sky-50 text-sky-900">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-sky-950">RHCE Practical Exam</h1>
+            <p class="text-lg text-sky-700">Question Paper</p>
+        </header>
+
+        <main>
+            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <div class="md:col-span-2">
+                        <h2 class="text-2xl font-bold text-sky-950 mb-2">Exam Overview</h2>
+                        <p class="text-sky-700 mb-4">
+                            This exam is designed to assess your practical skills in Red Hat Enterprise Linux system administration, starting from foundational concepts and progressing to more integrated tasks. All configurations must be persistent across reboots.
+                        </p>
+                        <div class="flex space-x-4 text-center">
+                            <div class="bg-sky-100 p-3 rounded-lg flex-1">
+                                <p class="text-sm font-semibold text-sky-600">Total Time</p>
+                                <p class="text-xl font-bold text-orange-600">3 Hours</p>
+                            </div>
+                            <div class="bg-sky-100 p-3 rounded-lg flex-1">
+                                <p class="text-sm font-semibold text-sky-600">Max Marks</p>
+                                <p class="text-xl font-bold text-orange-600">100</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="marksChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex justify-center mb-8 bg-sky-200 rounded-lg p-1 space-x-1">
+                <button data-tab="partA" class="tab-btn flex-1 py-2 px-4 rounded-md text-sm sm:text-base font-semibold transition-colors duration-300">Part A: Foundation</button>
+                <button data-tab="partB" class="tab-btn flex-1 py-2 px-4 rounded-md text-sm sm:text-base font-semibold transition-colors duration-300">Part B: Advanced</button>
+                <button data-tab="partC" class="tab-btn flex-1 py-2 px-4 rounded-md text-sm sm:text-base font-semibold transition-colors duration-300">Part C: Integrated Practical</button>
+            </nav>
+
+            <div id="content">
+                <!-- Content will be injected by JavaScript -->
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const examData = {
+                partA: {
+                    title: 'Part A: Simple Theory and Practical Questions',
+                    meta: '20 Marks | 60 Minutes',
+                    description: 'This section covers fundamental Linux concepts and basic administrative tasks. It assesses your knowledge of essential commands, file system navigation, user creation, and basic network configuration.',
+                    sections: {
+                        theory: {
+                            title: 'Theory',
+                            marks: 5,
+                            questions: [
+                                { q: 'What is the purpose of the `ls` command? List three common options you can use with it.', m: 1 },
+                                { q: 'Explain the difference between an absolute path and a relative path in the Linux filesystem.', m: 1 },
+                                { q: 'What is the primary role of `systemd` in modern Linux distributions like RHEL?', m: 1 },
+                                { q: 'How do you find documentation for a specific command, for example, `useradd`?', m: 1 },
+                                { q: 'What is the default TCP port number used by the SSH service?', m: 1 }
+                            ]
+                        },
+                        practical: {
+                            title: 'Practical',
+                            marks: 15,
+                            questions: [
+                                { 
+                                    q: 'File & Directory Creation', 
+                                    m: 3,
+                                    tasks: [
+                                        'Create a directory `/tmp/myfiles`.',
+                                        'Inside `/tmp/myfiles`, create two empty files named `file1.txt` and `file2.txt`.'
+                                    ]
+                                },
+                                { 
+                                    q: 'Basic User Management', 
+                                    m: 3,
+                                    tasks: [
+                                        'Create a new user account named `junioradmin`.',
+                                        'Set the password for `junioradmin` to `Password123`.',
+                                        'Add `junioradmin` to the `wheel` group.'
+                                    ]
+                                },
+                                { 
+                                    q: 'Hostname Configuration', 
+                                    m: 3,
+                                    tasks: [
+                                        'Configure your system\'s hostname to `examhost.local`.',
+                                        'Ensure the hostname persists after reboot.'
+                                    ]
+                                },
+                                { 
+                                    q: 'Static IP Address Configuration', 
+                                    m: 3,
+                                    tasks: [
+                                        'Configure your primary network interface (e.g., `enp0s3` or `eth0`) with a static IP address of `192.168.1.10` and a netmask of `255.255.255.0`.',
+                                        'Set the default gateway to `192.168.1.1`.',
+                                        'Configure the DNS server to `8.8.8.8`.',
+                                        'Ensure network configuration persists after reboot.'
+                                    ]
+                                },
+                                { 
+                                    q: 'Package Installation', 
+                                    m: 3,
+                                    tasks: [
+                                        'Install the `vim-enhanced` package on your system.'
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                },
+                partB: {
+                    title: 'Part B: Advanced Level Practical Questions',
+                    meta: '40 Marks | 1 Hour 15 Minutes',
+                    description: 'This section involves more complex, multi-step scenarios that require a deeper understanding of system administration. You will be tested on basic LVM, cron job scheduling, simple firewall rules, and advanced user password policies.',
+                    questions: [
+                        { 
+                            q: 'LVM Creation and Mounting', 
+                            icon: '💾',
+                            m: 10,
+                            tasks: [
+                                'Identify an unused physical disk (e.g., `/dev/sdb`). If none, create a loop device of 2GB and use it.',
+                                'Create a physical volume (PV) on this disk.',
+                                'Create a volume group (VG) named `vg_data` using the new PV.',
+                                'Create a logical volume (LV) named `lv_data` within `vg_data` with a size of 1GB.',
+                                'Format `lv_data` with the XFS filesystem.',
+                                'Mount `lv_data` permanently at `/mnt/data`.'
+                            ]
+                        },
+                        { 
+                            q: 'Scheduled Tasks with Cron', 
+                            icon: '⏰',
+                            m: 10,
+                            tasks: [
+                                'Create a simple shell script `/root/hello.sh` that echoes the text "Hello Exam" into a file named `/tmp/hello.log`.',
+                                'Make the script executable.',
+                                'Schedule this script to run every 5 minutes using `cron`.'
+                            ]
+                        },
+                        { 
+                            q: 'Basic Firewall Configuration', 
+                            icon: '�',
+                            m: 10,
+                            tasks: [
+                                'Configure the firewall to allow incoming HTTP (port 80) traffic.',
+                                'Configure the firewall to block all incoming traffic from the IP address `192.168.1.20`.',
+                                'Ensure firewall rules persist after reboot.'
+                            ]
+                        },
+                        { 
+                            q: 'Advanced User Password Policies', 
+                            icon: '🔐',
+                            m: 10,
+                            tasks: [
+                                'For the user `junioradmin` (created in Part A), set their password maximum age to 60 days.',
+                                'Configure a password warning period of 7 days before the password expires.',
+                                'Verify the applied password aging settings for `junioradmin`.'
+                            ]
+                        }
+                    ]
+                },
+                partC: {
+                    title: 'Part C: Integrated Practical Questions',
+                    meta: '40 Marks | 45 Minutes',
+                    description: 'This section involves tasks that integrate multiple system administration concepts, requiring you to apply knowledge from different domains to solve a problem. These questions are designed to be more challenging but still within the scope of advanced RHCSA skills.',
+                    questions: [
+                        { 
+                            q: 'Special Linux Permissions', 
+                            icon: '🔒',
+                            m: 10,
+                            tasks: [
+                                'Create a directory `/opt/shared_project`.',
+                                'Set the `set-GID` bit on `/opt/shared_project` so that all new files and directories created within it inherit the group ownership of the directory.',
+                                'Create a file `/opt/shared_project/testfile.txt` as `root` and verify its group ownership.',
+                                'Set the `sticky bit` on `/opt/shared_project` so that only the owner or root can delete or rename files within it.'
+                            ]
+                        },
+                        { 
+                            q: 'Sudo Access for Specific Commands', 
+                            icon: '⚙️',
+                            m: 10,
+                            tasks: [
+                                'Configure `sudo` for the user `junioradmin` (created in Part A) such that they can restart the `httpd` service without being prompted for a password.',
+                                'Ensure `junioradmin` cannot run any other `systemctl` commands as root without a password.',
+                                'Test this configuration by logging in as `junioradmin` and attempting to restart `httpd` via `sudo`.'
+                            ]
+                        },
+                        {
+                            q: 'Nginx Virtual Host Configuration',
+                            icon: '🌐',
+                            m: 10,
+                            tasks: [
+                                'Install the `nginx` package if not already installed.',
+                                'Configure Nginx to host a new virtual host named `webapp.example.com` serving content from `/var/www/webapp`.',
+                                'Create a simple `index.html` file in `/var/www/webapp` that says "Welcome to WebApp".',
+                                'Ensure Nginx can serve this virtual host and that the configuration persists after reboot.'
+                            ]
+                        },
+                        {
+                            q: 'Root Password Recovery Steps',
+                            icon: '🔑',
+                            m: 10,
+                            tasks: [
+                                'Describe the step-by-step procedure to recover a forgotten root password on a RHEL system by booting into single-user mode or rescue mode.',
+                                'Include the commands typically used to remount the root filesystem in read-write mode and change the password.'
+                            ]
+                        }
+                    ]
+                }
+            };
+
+            const contentDiv = document.getElementById('content');
+            const tabButtons = document.querySelectorAll('.tab-btn');
+
+            function renderPartA(partData) {
+                return `
+                    <div id="partA" class="tab-content space-y-8">
+                        <div class="text-center bg-white p-6 rounded-lg shadow-md">
+                           <h2 class="text-2xl font-bold text-sky-800">${partData.title}</h2>
+                           <p class="text-sky-600 font-semibold">${partData.meta}</p>
+                           <p class="mt-2 text-sky-700 max-w-3xl mx-auto">${partData.description}</p>
+                        </div>
+                        
+                        <section>
+                            <h3 class="text-xl font-bold mb-4 border-b-2 border-orange-500 pb-2">${partData.sections.theory.title} (${partData.sections.theory.marks} Marks)</h3>
+                            <div class="space-y-4">
+                                ${partData.sections.theory.questions.map((item, index) => `
+                                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                                        <p><strong>Q${index + 1}:</strong> ${item.q} <span class="text-sm font-semibold text-sky-600 float-right">[${item.m} Marks]</span></p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </section>
+                        
+                        <section>
+                            <h3 class="text-xl font-bold mb-4 border-b-2 border-orange-500 pb-2">${partData.sections.practical.title} (${partData.sections.practical.marks} Marks)</h3>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                ${partData.sections.practical.questions.map(item => `
+                                    <div class="bg-white p-5 rounded-lg shadow-sm flex flex-col">
+                                        <div class="flex-grow">
+                                            <h4 class="font-bold text-lg text-sky-800">${item.q}</h4>
+                                            <ul class="list-disc list-inside mt-2 space-y-2 text-sky-700">
+                                                ${item.tasks.map(task => `<li>${task}</li>`).join('')}
+                                            </ul>
+                                        </div>
+                                        <p class="text-right font-bold text-orange-600 mt-4 pt-2 border-t border-sky-200">[${item.m} Marks]</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </section>
+                    </div>
+                `;
+            }
+
+            function renderPartBOrC(partData, partId) {
+                 return `
+                    <div id="${partId}" class="tab-content space-y-8">
+                        <div class="text-center bg-white p-6 rounded-lg shadow-md">
+                           <h2 class="text-2xl font-bold text-sky-800">${partData.title}</h2>
+                           <p class="text-sky-600 font-semibold">${partData.meta}</p>
+                           <p class="mt-2 text-sky-700 max-w-3xl mx-auto">${partData.description}</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            ${partData.questions.map((item) => `
+                                <div class="bg-white p-5 rounded-lg shadow-sm flex flex-col">
+                                    <div class="flex-grow">
+                                        <h3 class="text-lg font-bold text-sky-800 mb-3"><span class="text-2xl mr-2">${item.icon}</span>${item.q}</h3>
+                                        <ul class="list-decimal list-inside space-y-2 text-sky-700 pl-2">
+                                            ${item.tasks.map(task => `<li>${task}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                    <p class="text-right font-bold text-orange-600 mt-4 pt-2 border-t border-sky-200">[${item.m} Marks]</p>
+                                    </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            contentDiv.innerHTML = `
+                ${renderPartA(examData.partA)}
+                ${renderPartBOrC(examData.partB, 'partB')}
+                ${renderPartBOrC(examData.partC, 'partC')}
+            `;
+
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            function switchTab(tabId) {
+                tabContents.forEach(content => {
+                    content.style.display = content.id === tabId ? 'block' : 'none';
+                });
+                tabButtons.forEach(button => {
+                    if (button.dataset.tab === tabId) {
+                        button.classList.add('bg-orange-600', 'text-white');
+                        button.classList.remove('text-sky-600', 'hover:bg-sky-300');
+                    } else {
+                        button.classList.remove('bg-orange-600', 'text-white');
+                        button.classList.add('text-sky-600', 'hover:bg-sky-300');
+                    }
+                });
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    switchTab(button.dataset.tab);
+                });
+            });
+
+            // Initial setup
+            switchTab('partA');
+            
+            // Chart.js implementation
+            const ctx = document.getElementById('marksChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Part A: Foundation', 'Part B: Advanced', 'Part C: Integrated Practical'],
+                    datasets: [{
+                        label: 'Marks Distribution',
+                        data: [20, 40, 40],
+                        backgroundColor: [
+                            'rgb(59, 130, 246, 0.8)', // Blue
+                            'rgb(249, 115, 22, 0.8)', // Orange
+                            'rgb(22, 163, 74, 0.8)'  // Green
+                        ],
+                        borderColor: [
+                            'rgb(59, 130, 246)',
+                            'rgb(249, 115, 22)',
+                            'rgb(22, 163, 74)'
+                        ],
+                        borderWidth: 1,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Marks Distribution by Part',
+                            padding: {
+                                bottom: 10
+                            },
+                             font: {
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + ' Marks';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>
+�
