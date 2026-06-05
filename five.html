@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RHCE Linux Sysadmin — Mock Examination | Synnefo Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-base: #0a0c10;
+    --bg-surface: #0f1219;
+    --bg-card: #141820;
+    --bg-accent: #111620;
+    --border: #1e2535;
+    --border-bright: #2a3550;
+    --ice-blue: #4fc3f7;
+    --ice-dim: #1e4a6e;
+    --ice-glow: #b3e5fc;
+    --amber: #ffb74d;
+    --amber-dim: #5a3a10;
+    --green: #69f0ae;
+    --green-dim: #0d3b27;
+    --red: #ef5350;
+    --red-dim: #3b1212;
+    --purple: #b39ddb;
+    --text-primary: #e8edf5;
+    --text-secondary: #8a96a8;
+    --text-muted: #4a5568;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  @media print {
+    body { background: white !important; color: black !important; }
+    .no-print { display: none !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  body { background: var(--bg-base); color: var(--text-primary); font-family: var(--sans); font-size: 15px; line-height: 1.7; min-height: 100vh; }
+
+  .scanline-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px); pointer-events: none; z-index: 0; }
+
+  .wrapper { max-width: 960px; margin: 0 auto; padding: 0 24px 80px; position: relative; z-index: 1; }
+
+  /* Header */
+  .exam-header { border-bottom: 1px solid var(--border-bright); padding: 40px 0 32px; margin-bottom: 40px; }
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .logo-block { display: flex; align-items: center; gap: 14px; }
+  .logo-hex { width: 44px; height: 44px; background: linear-gradient(135deg, var(--ice-dim), #0d2a45); border: 1px solid var(--ice-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--ice-blue); letter-spacing: 1px; }
+  .logo-text { display: flex; flex-direction: column; gap: 2px; }
+  .logo-name { font-size: 15px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.5px; }
+  .logo-sub { font-family: var(--mono); font-size: 11px; color: var(--ice-blue); letter-spacing: 2px; text-transform: uppercase; }
+  .exam-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; justify-content: flex-end; }
+  .meta-pill { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; padding: 5px 12px; border-radius: 6px; border: 1px solid; text-transform: uppercase; white-space: nowrap; }
+  .pill-time  { background: var(--amber-dim); border-color: var(--amber); color: var(--amber); }
+  .pill-marks { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+  .pill-level { background: var(--ice-dim); border-color: var(--ice-blue); color: var(--ice-blue); }
+  .pill-os    { background: rgba(239,83,80,0.1); border-color: #f48fb1; color: #f48fb1; }
+  .exam-title-block { margin-top: 28px; }
+  .exam-label { font-family: var(--mono); font-size: 11px; letter-spacing: 3px; color: var(--ice-blue); text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+  .exam-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--ice-blue); }
+  h1.exam-title { font-size: 34px; font-weight: 800; color: var(--text-primary); line-height: 1.15; letter-spacing: -0.5px; }
+  h1.exam-title span { color: var(--ice-blue); }
+
+  /* Candidate strip */
+  .candidate-strip { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 16px; align-items: center; margin-bottom: 28px; }
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  .field-label { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
+  .field-line { border-bottom: 1px solid var(--border-bright); min-height: 26px; }
+  .score-box { background: var(--bg-card); border: 1px solid var(--border-bright); border-radius: 10px; padding: 12px 20px; text-align: center; }
+  .score-label { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+  .score-value { font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--green); }
+
+  /* Platform banner */
+  .rhel-banner { background: rgba(244,143,177,0.05); border: 1px solid rgba(244,143,177,0.2); border-radius: 8px; padding: 12px 18px; margin-bottom: 24px; font-family: var(--mono); font-size: 12px; color: #f48fb1; display: flex; align-items: flex-start; gap: 12px; line-height: 1.7; }
+  .rhel-banner .banner-icon { flex-shrink: 0; margin-top: 2px; font-size: 14px; }
+  .rhel-banner strong { color: #f9a8c9; }
+
+  /* Instructions */
+  .instructions-card { background: var(--bg-surface); border: 1px solid var(--border); border-left: 3px solid var(--ice-blue); border-radius: 10px; padding: 20px 24px; margin-bottom: 44px; }
+  .instr-title { font-family: var(--mono); font-size: 11px; letter-spacing: 2px; color: var(--ice-blue); text-transform: uppercase; margin-bottom: 16px; }
+  .instr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 40px; }
+  .instr-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
+  .instr-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ice-blue); margin-top: 8px; flex-shrink: 0; }
+  .instr-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* Section headers */
+  .section-header { display: flex; align-items: center; gap: 16px; margin: 48px 0 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .section-tag { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 2px; padding: 6px 14px; border-radius: 6px; text-transform: uppercase; flex-shrink: 0; }
+  .tag-theory    { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
+  .tag-practical { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+  .section-info { flex: 1; }
+  h2.section-title { font-size: 20px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.3px; }
+  .section-sub { font-family: var(--mono); font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+  .section-marks { font-family: var(--mono); font-size: 12px; color: var(--text-secondary); text-align: right; flex-shrink: 0; line-height: 1.4; }
+  .section-marks strong { font-size: 24px; font-weight: 700; color: var(--amber); display: block; }
+  .section-marks.green strong { color: var(--green); }
+
+  /* Question cards */
+  .question { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; margin-bottom: 16px; transition: border-color 0.2s; }
+  .question:hover { border-color: var(--border-bright); }
+  .question-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 12px; }
+  .q-number { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--text-muted); background: var(--bg-surface); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; flex-shrink: 0; margin-top: 2px; }
+  .q-text { flex: 1; font-size: 15px; color: var(--text-primary); font-weight: 600; line-height: 1.5; }
+  .q-marks { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 1px; padding: 4px 10px; border-radius: 6px; flex-shrink: 0; margin-top: 2px; white-space: nowrap; }
+  .marks-theory    { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(255,183,77,0.3); }
+  .marks-practical { background: var(--green-dim); color: var(--green); border: 1px solid rgba(105,240,174,0.3); }
+  .q-parts { margin-top: 12px; display: flex; flex-direction: column; gap: 9px; border-top: 1px solid var(--border); padding-top: 12px; }
+  .q-part { display: flex; gap: 12px; align-items: flex-start; font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
+  .part-label { font-family: var(--mono); font-size: 11px; color: var(--purple); flex-shrink: 0; margin-top: 2px; min-width: 24px; }
+  .answer-space { margin-top: 14px; border: 1px dashed rgba(74,85,104,0.5); border-radius: 8px; height: 64px; display: flex; align-items: center; padding: 0 16px; }
+  .answer-placeholder { font-family: var(--mono); font-size: 11px; color: var(--text-muted); letter-spacing: 1px; }
+
+  /* Code */
+  code { font-family: var(--mono); font-size: 12.5px; background: var(--bg-accent); border: 1px solid var(--border-bright); color: var(--ice-glow); padding: 1px 6px; border-radius: 4px; }
+
+  /* Task badges */
+  .task-badge { display: inline-flex; align-items: center; font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 3px 9px; border-radius: 4px; margin-right: 6px; vertical-align: middle; }
+  .badge-aws     { background: rgba(255,153,0,0.12);   color: #ff9900;        border: 1px solid rgba(255,153,0,0.35); }
+  .badge-cli     { background: rgba(79,195,247,0.1);   color: var(--ice-blue); border: 1px solid rgba(79,195,247,0.3); }
+  .badge-config  { background: rgba(179,157,219,0.1);  color: var(--purple);  border: 1px solid rgba(179,157,219,0.3); }
+  .badge-trouble { background: rgba(239,83,80,0.1);    color: var(--red);     border: 1px solid rgba(239,83,80,0.3); }
+  .badge-rhel    { background: rgba(244,143,177,0.08); color: #f48fb1;        border: 1px solid rgba(244,143,177,0.3); }
+  .badge-storage { background: rgba(105,240,174,0.07); color: var(--green);   border: 1px solid rgba(105,240,174,0.25); }
+
+  /* Task blocks */
+  .task-block { background: var(--bg-accent); border: 1px solid var(--border-bright); border-left: 3px solid var(--green); border-radius: 8px; padding: 16px 18px; margin-top: 12px; }
+  .task-block.aws-task     { border-left-color: #ff9900; }
+  .task-block.config-task  { border-left-color: var(--purple); }
+  .task-block.trouble-task { border-left-color: var(--red); }
+  .task-block.rhel-task    { border-left-color: #f48fb1; }
+  .task-title { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; color: var(--text-muted); }
+  .task-steps { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  .task-steps li { display: flex; gap: 12px; align-items: flex-start; font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; }
+  .step-num { font-family: var(--mono); font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; margin-top: 3px; color: var(--green); background: var(--green-dim); border: 1px solid rgba(105,240,174,0.25); }
+  .task-block.aws-task     .step-num { color: #ff9900;       background: rgba(255,153,0,0.1);    border-color: rgba(255,153,0,0.25); }
+  .task-block.config-task  .step-num { color: var(--purple); background: rgba(179,157,219,0.1);  border-color: rgba(179,157,219,0.25); }
+  .task-block.trouble-task .step-num { color: var(--red);    background: var(--red-dim);         border-color: rgba(239,83,80,0.25); }
+  .task-block.rhel-task    .step-num { color: #f48fb1;       background: rgba(244,143,177,0.07); border-color: rgba(244,143,177,0.25); }
+
+  /* Group labels */
+  .q-group-label { font-family: var(--mono); font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-muted); margin: 28px 0 14px; display: flex; align-items: center; gap: 10px; }
+  .q-group-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Notes */
+  .note-block { background: rgba(255,183,77,0.05); border: 1px solid rgba(255,183,77,0.2); border-radius: 8px; padding: 12px 18px; margin-bottom: 24px; font-size: 13px; color: var(--amber); font-family: var(--mono); line-height: 1.7; }
+
+  /* Footer */
+  .exam-footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+  .footer-block { font-family: var(--mono); font-size: 11px; color: var(--text-muted); line-height: 2; }
+  .footer-block .fb-label { color: var(--ice-blue); letter-spacing: 2px; text-transform: uppercase; font-size: 9px; display: block; margin-bottom: 2px; }
+  .watermark { font-family: var(--mono); font-size: 10px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; opacity: 0.35; text-align: center; margin-top: 44px; }
+</style>
+</head>
+<body>
+<div class="scanline-overlay"></div>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header class="exam-header">
+    <div class="header-top">
+      <div class="logo-block">
+        <div class="logo-hex">SYN</div>
+        <div class="logo-text">
+          <span class="logo-name">Synnefo Solutions</span>
+          <span class="logo-sub">IT Training Institute · Kochi</span>
+        </div>
+      </div>
+      <div class="exam-meta">
+        <span class="meta-pill pill-time">⏱ 3 Hours</span>
+        <span class="meta-pill pill-marks">100 Marks</span>
+        <span class="meta-pill pill-os">RHEL 9 / CentOS Stream 9</span>
+        <span class="meta-pill pill-level">Fresher · RHCE Track</span>
+      </div>
+    </div>
+    <div class="exam-title-block">
+      <div class="exam-label">Mock Examination — Final</div>
+      <h1 class="exam-title">Linux System <span>Administration</span><br>&amp; AWS Operations</h1>
+    </div>
+  </header>
+
+  <!-- CANDIDATE STRIP -->
+  <div class="candidate-strip">
+    <div class="field-group">
+      <span class="field-label">Candidate Name</span>
+      <div class="field-line"></div>
+    </div>
+    <div class="field-group">
+      <span class="field-label">Batch / Roll No.</span>
+      <div class="field-line"></div>
+    </div>
+    <div class="field-group">
+      <span class="field-label">EC2 Instance IP</span>
+      <div class="field-line"></div>
+    </div>
+    <div class="score-box">
+      <div class="score-label">Total Score</div>
+      <div class="score-value">__ / 100</div>
+    </div>
+  </div>
+
+  <!-- PLATFORM BANNER -->
+  <div class="rhel-banner">
+    <span class="banner-icon">⬡</span>
+    <span><strong>Platform:</strong> All tasks must be performed on a <strong>Red Hat Enterprise Linux 9</strong> or <strong>CentOS Stream 9</strong> EC2 instance. Use <code>dnf</code> for all package management. Firewall rules are managed via <strong>AWS Security Groups</strong> — <code>firewalld</code> is not in scope for this exam.</span>
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <div class="instructions-card">
+    <div class="instr-title">General Instructions</div>
+    <div class="instr-grid">
+      <div class="instr-item"><span class="instr-dot"></span><span>All theory questions are <strong>compulsory</strong>. Answer clearly in English.</span></div>
+      <div class="instr-item"><span class="instr-dot"></span><span>All practical tasks must be executed on your <strong>RHEL 9 EC2 instance</strong>.</span></div>
+      <div class="instr-item"><span class="instr-dot"></span><span>Total time: <strong>3 hours</strong>. Practicals carry 80 marks — plan your time.</span></div>
+      <div class="instr-item"><span class="instr-dot"></span><span>Show each task output to the evaluator before moving on.</span></div>
+      <div class="instr-item"><span class="instr-dot"></span><span>Theory: <strong>20 marks</strong> — answer any <strong>4</strong> from 5 questions (5 marks each).</span></div>
+      <div class="instr-item"><span class="instr-dot"></span><span>Do <strong>not</strong> reboot or terminate your instance during the exam.</span></div>
+      <div class="instr-item"><span class="instr-dot"></span><span>The <code>ec2-user</code> account has full <code>sudo</code> access.</span></div>
+      <div class="instr-item"><span class="instr-dot"></span><span>Terminal history must remain intact — evaluator may inspect <code>~/.bash_history</code>.</span></div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════
+       SECTION A — THEORY
+  ═══════════════════════ -->
+  <div class="section-header">
+    <span class="section-tag tag-theory">Section A</span>
+    <div class="section-info">
+      <h2 class="section-title">Theory Questions</h2>
+      <div class="section-sub">Answer any 4 out of 5 &nbsp;·&nbsp; 5 marks each</div>
+    </div>
+    <div class="section-marks">
+      <strong>20</strong>
+      marks
+    </div>
+  </div>
+
+  <!-- Q.01 — Permissions (medium) -->
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">Q.01</span>
+      <span class="q-text">Explain the Linux file and directory permission model. What do read, write, and execute mean when applied to a <em>directory</em> specifically? What is the effect of SUID, SGID, and the Sticky Bit?</span>
+      <span class="q-marks marks-theory">5 M</span>
+    </div>
+    <div class="q-parts">
+      <div class="q-part"><span class="part-label">(a)</span><span>Decode the permission string <code>drwxrwsr-t</code>. Identify which special bits are set and what each one protects.</span></div>
+      <div class="q-part"><span class="part-label">(b)</span><span>What is the numeric (octal) equivalent of <code>rwxr-xr--</code>? Show the calculation for each class.</span></div>
+      <div class="q-part"><span class="part-label">(c)</span><span>On RHEL 9, what is the default <code>umask</code> for a regular user and how does it affect newly created files and directories?</span></div>
+    </div>
+    <div class="answer-space"><span class="answer-placeholder">// answer space</span></div>
+  </div>
+
+  <!-- Q.02 — systemd (medium) -->
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">Q.02</span>
+      <span class="q-text">What is systemd and how does it manage services on RHEL 9? Explain the concept of unit files, dependency ordering, and targets. How does it differ from the SysV init system it replaced?</span>
+      <span class="q-marks marks-theory">5 M</span>
+    </div>
+    <div class="q-parts">
+      <div class="q-part"><span class="part-label">(a)</span><span>What is the difference between <code>systemctl stop</code>, <code>systemctl disable</code>, and <code>systemctl mask</code>? Give a real scenario where you would use each.</span></div>
+      <div class="q-part"><span class="part-label">(b)</span><span>On RHEL 9, where are vendor-supplied unit files stored versus administrator overrides? Which takes priority and why?</span></div>
+      <div class="q-part"><span class="part-label">(c)</span><span>A service fails on boot. Write the exact commands you would run to inspect the failure, and name the journalctl field that shows the process exit code.</span></div>
+    </div>
+    <div class="answer-space"><span class="answer-placeholder">// answer space</span></div>
+  </div>
+
+  <!-- Q.03 — SSH (easy-medium) -->
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">Q.03</span>
+      <span class="q-text">What is SSH key-based authentication? Explain how the public/private key handshake works and why it is more secure than password authentication.</span>
+      <span class="q-marks marks-theory">5 M</span>
+    </div>
+    <div class="q-parts">
+      <div class="q-part"><span class="part-label">(a)</span><span>What is the role of <code>~/.ssh/authorized_keys</code> on the server? What permissions must the <code>.ssh</code> directory and the <code>authorized_keys</code> file have, and why does SSH enforce this strictly?</span></div>
+      <div class="q-part"><span class="part-label">(b)</span><span>Name three directives you would change in <code>/etc/ssh/sshd_config</code> to harden an SSH server. State what risk each change mitigates.</span></div>
+      <div class="q-part"><span class="part-label">(c)</span><span>What is the difference between <code>ssh-keygen</code> and <code>ssh-copy-id</code>? In this exam you cannot use <code>ssh-copy-id</code> — what manual steps does it normally perform?</span></div>
+    </div>
+    <div class="answer-space"><span class="answer-placeholder">// answer space</span></div>
+  </div>
+
+  <!-- Q.04 — LVM (hard) -->
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">Q.04</span>
+      <span class="q-text">What is LVM (Logical Volume Manager)? Explain the three-layer architecture — Physical Volumes, Volume Groups, and Logical Volumes — and the advantages it provides over traditional fixed partitioning.</span>
+      <span class="q-marks marks-theory">5 M</span>
+    </div>
+    <div class="q-parts">
+      <div class="q-part"><span class="part-label">(a)</span><span>A RHEL 9 server is running out of space on <code>/var</code>. Describe step by step how to extend the logical volume and resize the XFS filesystem online without unmounting it.</span></div>
+      <div class="q-part"><span class="part-label">(b)</span><span>What is an LVM snapshot? Describe a real sysadmin scenario where you would create one before a risky operation.</span></div>
+      <div class="q-part"><span class="part-label">(c)</span><span>What is the difference between <code>pvs</code>, <code>vgs</code>, and <code>lvs</code>? What specific information does each command show?</span></div>
+    </div>
+    <div class="answer-space"><span class="answer-placeholder">// answer space</span></div>
+  </div>
+
+  <!-- Q.05 — SELinux (hard) -->
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">Q.05</span>
+      <span class="q-text">What is SELinux? Explain the difference between Enforcing, Permissive, and Disabled modes. Why does Red Hat strongly recommend keeping SELinux enabled in production?</span>
+      <span class="q-marks marks-theory">5 M</span>
+    </div>
+    <div class="q-parts">
+      <div class="q-part"><span class="part-label">(a)</span><span>What is an SELinux context? Explain the four fields of the label <code>system_u:object_r:httpd_sys_content_t:s0</code>.</span></div>
+      <div class="q-part"><span class="part-label">(b)</span><span>A web server cannot read a file even though Unix permissions are correct. How would you diagnose whether SELinux is the cause, and what command would fix the file's context permanently?</span></div>
+      <div class="q-part"><span class="part-label">(c)</span><span>What is the difference between <code>setenforce 0</code> and setting <code>SELINUX=permissive</code> in <code>/etc/selinux/config</code>? Which one survives a reboot?</span></div>
+    </div>
+    <div class="answer-space"><span class="answer-placeholder">// answer space</span></div>
+  </div>
+
+
+  <!-- ═══════════════════════
+       SECTION B — PRACTICAL
+  ═══════════════════════ -->
+  <div class="section-header">
+    <span class="section-tag tag-practical">Section B</span>
+    <div class="section-info">
+      <h2 class="section-title">Practical Tasks</h2>
+      <div class="section-sub">All tasks are compulsory &nbsp;·&nbsp; Execute on your RHEL 9 EC2 instance</div>
+    </div>
+    <div class="section-marks green">
+      <strong>80</strong>
+      marks
+    </div>
+  </div>
+
+  <div class="note-block">
+    ⚠ Confirm your RHEL 9 instance is running and connected via SSH before starting. Call the evaluator to verify each task before moving on.
+  </div>
+
+  <!-- P.01 — System Monitoring (easy, trimmed to 4 steps) · 5M -->
+  <div class="q-group-label">Part 1 — System Monitoring &amp; Resource Assessment</div>
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">P.01</span>
+      <span class="q-text"><span class="task-badge badge-rhel">RHEL</span>Assess the current health and resource state of the server</span>
+      <span class="q-marks marks-practical">5 M</span>
+    </div>
+    <div class="task-block rhel-task">
+      <div class="task-title">Tasks to complete</div>
+      <ul class="task-steps">
+        <li><span class="step-num">01</span>Confirm the OS version, kernel version, and system architecture using <code>/etc/redhat-release</code>, <code>uname -r</code>, and <code>uname -m</code>.</li>
+        <li><span class="step-num">02</span>Show total, used, and available memory and swap in human-readable format using <code>free -h</code>.</li>
+        <li><span class="step-num">03</span>List all mounted filesystems with disk usage and filesystem type using <code>df -Th</code>. Confirm that the root partition uses XFS.</li>
+        <li><span class="step-num">04</span>Identify the top 5 processes by memory consumption using <code>ps aux --sort=-%mem | head -6</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- P.02 — User & Permission Management (medium, trimmed to 5 steps) · 8M -->
+  <div class="q-group-label">Part 2 — User, Group &amp; Permission Management</div>
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">P.02</span>
+      <span class="q-text"><span class="task-badge badge-config">users</span>Provision users and enforce access controls for a development team</span>
+      <span class="q-marks marks-practical">8 M</span>
+    </div>
+    <div class="task-block config-task">
+      <div class="task-title">Tasks to complete</div>
+      <ul class="task-steps">
+        <li><span class="step-num">01</span>Create two users: <code>devuser</code> and <code>opsuser</code>. Set passwords for both. Create a group named <code>synnefo-team</code> and add both users to it as secondary members. Verify membership with <code>id devuser</code>.</li>
+        <li><span class="step-num">02</span>Create the directory <code>/data/projects</code>. Set its group ownership to <code>synnefo-team</code> and permissions to <code>2770</code> (SGID + rwx for owner and group). Verify with <code>ls -ld /data/projects</code>.</li>
+        <li><span class="step-num">03</span>Switch to <code>devuser</code> using <code>su - devuser</code> and create a file inside <code>/data/projects</code>. Switch back and verify the file's group owner is automatically <code>synnefo-team</code> due to the SGID bit.</li>
+        <li><span class="step-num">04</span>Grant <code>opsuser</code> full sudo privileges by creating <code>/etc/sudoers.d/opsuser</code> with the line <code>opsuser ALL=(ALL) ALL</code>. Verify with <code>sudo -l -U opsuser</code>.</li>
+        <li><span class="step-num">05</span>Lock <code>devuser</code>'s account with <code>usermod -L devuser</code>. Confirm the <code>!</code> prefix in <code>/etc/shadow</code>. Unlock it with <code>usermod -U devuser</code> and verify the account is active again.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- P.03 — Process & systemd (medium, 4 steps) · 7M -->
+  <div class="q-group-label">Part 3 — Process Management &amp; systemd Services</div>
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">P.03</span>
+      <span class="q-text"><span class="task-badge badge-cli">systemd</span>Manage running processes and control system services on RHEL 9</span>
+      <span class="q-marks marks-practical">7 M</span>
+    </div>
+    <div class="task-block">
+      <div class="task-title">Tasks to complete</div>
+      <ul class="task-steps">
+        <li><span class="step-num">01</span>Run <code>sleep 500 &amp;</code> three times. List all three PIDs using <code>ps aux | grep sleep</code>. Kill the first by PID, the second using <code>kill -9</code>, and the third using <code>pkill sleep</code>. Verify none remain with <code>ps aux | grep sleep</code>.</li>
+        <li><span class="step-num">02</span>Install Nginx using <code>sudo dnf install nginx -y</code>. Start the service and enable it to start automatically on boot. Verify both its running state and enabled state using <code>systemctl status nginx</code>.</li>
+        <li><span class="step-num">03</span>Stop Nginx and verify it is stopped. Disable it from starting on boot and confirm it is disabled. Then start it again and verify the service is running.</li>
+        <li><span class="step-num">04</span>Use <code>systemctl list-units --type=service --state=failed</code> to check for any failed services. Use <code>journalctl -u &lt;service-name&gt; -n 20 --no-pager</code> to inspect the logs of at least one service — active or failed.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- P.04 — Package Management (easy-medium, 4 steps) · 5M -->
+  <div class="q-group-label">Part 4 — Package Management with dnf</div>
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">P.04</span>
+      <span class="q-text"><span class="task-badge badge-rhel">dnf</span>Manage software packages on a RHEL 9 server</span>
+      <span class="q-marks marks-practical">5 M</span>
+    </div>
+    <div class="task-block rhel-task">
+      <div class="task-title">Tasks to complete</div>
+      <ul class="task-steps">
+        <li><span class="step-num">01</span>Check for available package updates using <code>dnf check-update</code>. Report how many packages have pending updates — do not perform the upgrade.</li>
+        <li><span class="step-num">02</span>Install <code>net-tools</code> and <code>wget</code>. Confirm both are installed using <code>dnf info</code> and note their version and repository source.</li>
+        <li><span class="step-num">03</span>Remove <code>wget</code> completely. Verify it is no longer available using <code>which wget</code>.</li>
+        <li><span class="step-num">04</span>List all packages explicitly installed by an administrator (excluding auto-installed dependencies) and save the output to <code>/home/ec2-user/installed_packages.txt</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- P.05 — Cron (medium, 4 steps) · 6M -->
+  <div class="q-group-label">Part 5 — Scheduled Tasks (cron)</div>
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">P.05</span>
+      <span class="q-text"><span class="task-badge badge-config">cron</span>Automate routine system administration tasks using cron</span>
+      <span class="q-marks marks-practical">6 M</span>
+    </div>
+    <div class="task-block config-task">
+      <div class="task-title">Tasks to complete</div>
+      <ul class="task-steps">
+        <li><span class="step-num">01</span>Create the script <code>/home/ec2-user/heartbeat.sh</code> that appends the current date-time and the output of <code>free -h</code> to <code>/tmp/heartbeat.log</code>. Make it executable with <code>chmod +x</code>.</li>
+        <li><span class="step-num">02</span>Add a cron entry using <code>crontab -e</code> to run the script every 2 minutes. Wait for at least one execution, then show <code>cat /tmp/heartbeat.log</code> to the evaluator.</li>
+        <li><span class="step-num">03</span>Create the file <code>/etc/cron.d/disk_report</code> with a system-wide cron entry that runs <code>df -h</code> as <code>root</code> every day at 23:30 and appends output to <code>/var/log/disk_report.log</code>. Remember: entries in <code>/etc/cron.d/</code> require a username field before the command.</li>
+        <li><span class="step-num">04</span>Confirm your user cron entry with <code>crontab -l</code>, then remove the heartbeat entry using <code>crontab -e</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- P.06 — SSH & Keys (medium-hard, 5 steps) · 8M -->
+  <div class="q-group-label">Part 6 — SSH &amp; Key-Based Authentication</div>
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">P.06</span>
+      <span class="q-text"><span class="task-badge badge-config">ssh</span>Set up key-based SSH access and harden the SSH daemon on RHEL 9</span>
+      <span class="q-marks marks-practical">8 M</span>
+    </div>
+    <div class="task-block config-task">
+      <div class="task-title">Tasks to complete</div>
+      <ul class="task-steps">
+        <li><span class="step-num">01</span>Generate a 4096-bit RSA key pair as <code>ec2-user</code>: <code>ssh-keygen -t rsa -b 4096 -C "exam@synnefo"</code>. Accept the default storage path (<code>/home/ec2-user/.ssh/id_rsa</code>).</li>
+        <li><span class="step-num">02</span>Manually deploy the public key for <code>devuser</code>: create <code>/home/devuser/.ssh/</code>, copy <code>id_rsa.pub</code> into <code>/home/devuser/.ssh/authorized_keys</code>, then set <code>700</code> on the directory and <code>600</code> on the file. Ensure both are owned by <code>devuser:devuser</code>.</li>
+        <li><span class="step-num">03</span>Test key-based login: <code>ssh -i /home/ec2-user/.ssh/id_rsa devuser@localhost</code>. The session must open without a password prompt. Exit the session after confirming.</li>
+        <li><span class="step-num">04</span>Edit <code>/etc/ssh/sshd_config</code> to set <code>PermitRootLogin no</code>, <code>PasswordAuthentication no</code>, and <code>MaxAuthTries 3</code>. Reload the daemon with <code>systemctl reload sshd</code>.</li>
+        <li><span class="step-num">05</span>Verify all three settings took effect: <code>sshd -T | grep -E "permitrootlogin|passwordauthentication|maxauthtries"</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- P.07 — Nginx Virtual Host (medium-hard, 6 steps) · 10M -->
+  <div class="q-group-label">Part 7 — Web Server &amp; Virtual Host</div>
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">P.07</span>
+      <span class="q-text"><span class="task-badge badge-config">nginx</span>Deploy and configure an Nginx virtual host on RHEL 9</span>
+      <span class="q-marks marks-practical">10 M</span>
+    </div>
+    <div class="task-block config-task">
+      <div class="task-title">Tasks to complete</div>
+      <ul class="task-steps">
+        <li><span class="step-num">01</span>Nginx was installed in P.03. Confirm it is running and enabled with <code>systemctl status nginx</code>. If not, start and enable it now.</li>
+        <li><span class="step-num">02</span>Create the web root at <code>/var/www/synnefoapp/html/</code>. Place an <code>index.html</code> file containing <code>&lt;h1&gt;Welcome to SynnefoApp&lt;/h1&gt;</code>. Set the entire directory tree ownership to <code>nginx:nginx</code> using <code>chown -R</code>.</li>
+        <li><span class="step-num">03</span>Create the virtual host config at <code>/etc/nginx/conf.d/synnefoapp.conf</code>. It must listen on port 80, use <code>server_name synnefoapp.local</code>, point <code>root</code> to the web root above, and include separate <code>access_log</code> and <code>error_log</code> directives writing to <code>/var/log/nginx/synnefoapp_access.log</code> and <code>/var/log/nginx/synnefoapp_error.log</code>.</li>
+        <li><span class="step-num">04</span>Test the config with <code>nginx -t</code> and reload Nginx. Add the line <code>127.0.0.1 synnefoapp.local</code> to <code>/etc/hosts</code>.</li>
+        <li><span class="step-num">05</span>Run <code>curl -I http://synnefoapp.local</code>. If you receive a 403 Forbidden, check the SELinux context on the web root with <code>ls -lZ /var/www/synnefoapp/html/</code>. Fix it with <code>chcon -R -t httpd_sys_content_t /var/www/synnefoapp/html/</code> and retry. The response must show HTTP 200.</li>
+        <li><span class="step-num">06</span>Make three requests to the site with <code>curl http://synnefoapp.local</code>. Confirm the access log is recording entries: <code>tail /var/log/nginx/synnefoapp_access.log</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- P.08 — AWS Security Groups (medium, 5 steps) · 5M -->
+  <div class="q-group-label">Part 8 — Network Access Control via AWS Security Groups</div>
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">P.08</span>
+      <span class="q-text"><span class="task-badge badge-aws">AWS SG</span>Manage inbound traffic rules using AWS Security Groups via the CLI</span>
+      <span class="q-marks marks-practical">5 M</span>
+    </div>
+    <div class="task-block aws-task">
+      <div class="task-title">Tasks to complete</div>
+      <ul class="task-steps">
+        <li><span class="step-num">01</span>Install the AWS CLI with <code>sudo dnf install awscli -y</code> and configure it with your IAM credentials using <code>aws configure</code>. Verify the setup with <code>aws sts get-caller-identity</code>.</li>
+        <li><span class="step-num">02</span>Get your instance's MAC address from the metadata service, then retrieve the Security Group ID: <code>curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/&lt;MAC&gt;/security-group-ids</code>. Describe the group with <code>aws ec2 describe-security-groups --group-ids &lt;sg-id&gt;</code>.</li>
+        <li><span class="step-num">03</span>Add an inbound rule to allow HTTP (TCP port 80) from <code>0.0.0.0/0</code> using <code>aws ec2 authorize-security-group-ingress</code>. Verify the rule is listed in the group's inbound rules.</li>
+        <li><span class="step-num">04</span>Add a second inbound rule to allow MySQL (TCP port 3306) only from the CIDR <code>10.0.0.0/24</code>, simulating a database port restricted to an internal subnet.</li>
+        <li><span class="step-num">05</span>Revoke the port 3306 rule using <code>aws ec2 revoke-security-group-ingress</code>. Describe the Security Group again to confirm the rule is gone.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- P.09 — Disk & Storage (medium, 4 steps) · 6M -->
+  <div class="q-group-label">Part 9 — Disk &amp; Storage Management</div>
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">P.09</span>
+      <span class="q-text"><span class="task-badge badge-storage">storage</span>Inspect storage layout and manage filesystems on RHEL 9</span>
+      <span class="q-marks marks-practical">6 M</span>
+    </div>
+    <div class="task-block">
+      <div class="task-title">Tasks to complete</div>
+      <ul class="task-steps">
+        <li><span class="step-num">01</span>List all block devices using <code>lsblk</code>. Identify the primary disk and its partitions.</li>
+        <li><span class="step-num">02</span>Display the current LVM layout using <code>pvs</code>, <code>vgs</code>, and <code>lvs</code>. Report the Volume Group name, total size, and free space available.</li>
+        <li><span class="step-num">03</span>Create a new directory <code>/mnt/examdata</code>. Create a 200 MB image file at <code>/tmp/testfile.img</code> using <code>dd if=/dev/zero of=/tmp/testfile.img bs=1M count=200</code>. Format it as XFS with <code>mkfs.xfs /tmp/testfile.img</code> and mount it to <code>/mnt/examdata</code> using <code>mount -o loop</code>. Verify the mount with <code>df -h /mnt/examdata</code>.</li>
+        <li><span class="step-num">04</span>Unmount <code>/mnt/examdata</code> cleanly using <code>umount</code>. Confirm it is no longer mounted with <code>df -h</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- P.10 — Network Diagnostics (easy-medium, 4 steps) · 5M -->
+  <div class="q-group-label">Part 10 — Network Diagnostics</div>
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">P.10</span>
+      <span class="q-text"><span class="task-badge badge-cli">network</span>Diagnose network configuration and connectivity on RHEL 9</span>
+      <span class="q-marks marks-practical">5 M</span>
+    </div>
+    <div class="task-block">
+      <div class="task-title">Tasks to complete — use nmcli and ip; ifconfig is deprecated on RHEL 9</div>
+      <ul class="task-steps">
+        <li><span class="step-num">01</span>List all network interfaces and their states using <code>nmcli device status</code>. Display IP addresses and MAC addresses with <code>ip addr show</code>.</li>
+        <li><span class="step-num">02</span>Display the routing table using <code>ip route show</code>. Identify the default gateway and explain to the evaluator what happens to outbound traffic if this route is missing.</li>
+        <li><span class="step-num">03</span>List all listening TCP ports and the process names bound to them using <code>ss -tlnp</code>. Identify which service is listening on port 80.</li>
+        <li><span class="step-num">04</span>Test external connectivity by pinging <code>8.8.8.8</code> for 5 packets with <code>ping -c 5 8.8.8.8</code> and trace the path with <code>traceroute 8.8.8.8</code>. Show both outputs to the evaluator.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- P.11 — Log Analysis (easy-medium, 3 steps) · 6M -->
+  <div class="q-group-label">Part 11 — Log Analysis</div>
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">P.11</span>
+      <span class="q-text"><span class="task-badge badge-cli">logs</span>Investigate system and service logs using journalctl on RHEL 9</span>
+      <span class="q-marks marks-practical">6 M</span>
+    </div>
+    <div class="task-block">
+      <div class="task-title">Tasks to complete</div>
+      <ul class="task-steps">
+        <li><span class="step-num">01</span>Show all journal entries from the past 1 hour: <code>journalctl --since "1 hour ago" --no-pager</code>. Then filter to show only Nginx service entries from today: <code>journalctl -u nginx --since today --no-pager</code>.</li>
+        <li><span class="step-num">02</span>SSH login events on RHEL 9 are recorded in <code>/var/log/secure</code>. Use <code>grep</code> to list all failed password attempts and display a count. Then find and display the last 5 successful logins from the same file.</li>
+        <li><span class="step-num">03</span>Use <code>journalctl -p err -b --no-pager</code> to show all error-priority messages since the last boot. Identify and report any recurring patterns to the evaluator.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- P.12 — Troubleshooting (hard, 3 scenarios) · 10M -->
+  <div class="q-group-label">Part 12 — Troubleshooting Scenarios</div>
+  <div class="question">
+    <div class="question-header">
+      <span class="q-number">P.12</span>
+      <span class="q-text"><span class="task-badge badge-trouble">debug</span>Diagnose and resolve three real-world RHEL 9 system administration problems</span>
+      <span class="q-marks marks-practical">10 M</span>
+    </div>
+    <div class="task-block trouble-task">
+      <div class="task-title">Each scenario is worth 3–4 marks — show the broken state first, then demonstrate the fix</div>
+      <ul class="task-steps">
+        <li><span class="step-num">S1</span><strong style="color:var(--text-primary)">Nginx config broken (4M):</strong> Introduce a deliberate syntax error into <code>/etc/nginx/conf.d/synnefoapp.conf</code> — for example, remove a semicolon from a directive. Attempt to reload Nginx — it must fail. Use <code>nginx -t</code> and <code>journalctl -u nginx -n 20 --no-pager</code> to locate the exact error, fix it, then reload and confirm the service is back up with <code>curl -I http://synnefoapp.local</code>.</li>
+        <li><span class="step-num">S2</span><strong style="color:var(--text-primary)">Port 80 conflict (3M):</strong> Run <code>sudo ncat -l 80 &amp;</code> to occupy port 80 (install <code>nmap-ncat</code> first with <code>dnf install nmap-ncat -y</code> if needed). Nginx can no longer bind to port 80 and will fail to start. Use <code>ss -tlnp</code> to identify the process occupying port 80, terminate it by PID, and successfully start Nginx. Verify with <code>systemctl status nginx</code>.</li>
+        <li><span class="step-num">S3</span><strong style="color:var(--text-primary)">SELinux blocking web content (3M):</strong> Copy a file from <code>/tmp</code> to <code>/var/www/synnefoapp/html/test.html</code> using <code>cp</code>, which carries over the source SELinux context. Attempt to fetch it with <code>curl http://synnefoapp.local/test.html</code> — it will return 403 Forbidden. Use <code>ls -lZ</code> to inspect the wrong context, then fix it with <code>restorecon -Rv /var/www/synnefoapp/html/</code> and verify the file is now served correctly.</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- FOOTER -->
+  <footer class="exam-footer">
+    <div class="footer-block">
+      <span class="fb-label">Institute</span>
+      Synnefo Solutions<br>
+      IT Training Institute, Ernakulam, Kochi<br>
+      Networking · DevOps · Cloud · Linux
+    </div>
+    <div class="footer-block">
+      <span class="fb-label">Exam Details</span>
+      RHCE Track — Linux Sysadmin Final Mock<br>
+      Platform: RHEL 9 / CentOS Stream 9 on AWS EC2<br>
+      Duration: 3 Hours &nbsp;·&nbsp; Theory: 20 M &nbsp;·&nbsp; Practical: 80 M
+    </div>
+    <div class="footer-block">
+      <span class="fb-label">Evaluator Signature</span>
+      <br>
+      ___________________________<br>
+      Date: _____ / _____ / _______
+    </div>
+  </footer>
+
+  <div class="watermark">Synnefo Solutions &nbsp;·&nbsp; RHCE Mock Exam &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; Do Not Distribute</div>
+
+</div>
+</body>
+</html>
