@@ -205,11 +205,11 @@
   <div class="instructions-card">
     <div class="instr-title">General Instructions</div>
     <div class="instr-grid">
-      <div class="instr-item"><span class="instr-dot"></span><span>All theory questions are <strong>compulsory</strong>. Answer clearly in English.</span></div>
+      <div class="instr-item"><span class="instr-dot"></span><span>Answer theory questions clearly in English. Write legibly.</span></div>
       <div class="instr-item"><span class="instr-dot"></span><span>All practical tasks must be executed on your <strong>RHEL 9 EC2 instance</strong>.</span></div>
       <div class="instr-item"><span class="instr-dot"></span><span>Total time: <strong>3 hours</strong>. Practicals carry 80 marks — plan your time.</span></div>
       <div class="instr-item"><span class="instr-dot"></span><span>Show each task output to the evaluator before moving on.</span></div>
-      <div class="instr-item"><span class="instr-dot"></span><span>Theory: <strong>20 marks</strong> — answer any <strong>4</strong> from 5 questions (5 marks each).</span></div>
+      <div class="instr-item"><span class="instr-dot"></span><span>Theory: <strong>20 marks</strong> — all <strong>4</strong> questions are compulsory (5 marks each).</span></div>
       <div class="instr-item"><span class="instr-dot"></span><span>Do <strong>not</strong> reboot or terminate your instance during the exam.</span></div>
       <div class="instr-item"><span class="instr-dot"></span><span>The <code>ec2-user</code> account has full <code>sudo</code> access.</span></div>
       <div class="instr-item"><span class="instr-dot"></span><span>Terminal history must remain intact — evaluator may inspect it.</span></div>
@@ -222,7 +222,7 @@
     <span class="section-tag tag-theory">Section A</span>
     <div class="section-info">
       <h2 class="section-title">Theory Questions</h2>
-      <div class="section-sub">Answer any 4 out of 5 &nbsp;·&nbsp; 5 marks each</div>
+      <div class="section-sub">All 4 questions are compulsory &nbsp;·&nbsp; 5 marks each</div>
     </div>
     <div class="section-marks">
       <strong>20</strong>
@@ -259,19 +259,6 @@
   <div class="question">
     <div class="question-header">
       <span class="q-number">Q.03</span>
-      <span class="q-text">What is SSH key-based authentication? Explain how the public/private key handshake works and why it is more secure than password authentication.</span>
-      <span class="q-marks marks-theory">5 M</span>
-    </div>
-    <div class="q-parts">
-      <div class="q-part"><span class="part-label">(a)</span><span>What is the role of <code>authorized_keys</code> on the server? What permissions must the <code>.ssh</code> directory and the file itself have, and why does SSH enforce this strictly?</span></div>
-      <div class="q-part"><span class="part-label">(b)</span><span>Name three directives you would change in <code>sshd_config</code> to harden an SSH server in production. State the risk each change mitigates.</span></div>
-      <div class="q-part"><span class="part-label">(c)</span><span>What does <code>ssh-copy-id</code> do? If you cannot use it, what manual steps must you perform to achieve the same result?</span></div>
-    </div>
-  </div>
-
-  <div class="question">
-    <div class="question-header">
-      <span class="q-number">Q.04</span>
       <span class="q-text">What is LVM (Logical Volume Manager)? Explain the three-layer architecture — Physical Volumes, Volume Groups, and Logical Volumes — and the advantages it provides over traditional fixed partitioning.</span>
       <span class="q-marks marks-theory">5 M</span>
     </div>
@@ -284,7 +271,7 @@
 
   <div class="question">
     <div class="question-header">
-      <span class="q-number">Q.05</span>
+      <span class="q-number">Q.04</span>
       <span class="q-text">What is SELinux? Explain the difference between Enforcing, Permissive, and Disabled modes. Why does Red Hat strongly recommend keeping SELinux enabled in production?</span>
       <span class="q-marks marks-theory">5 M</span>
     </div>
@@ -353,7 +340,7 @@
     <div class="question-header">
       <span class="q-number">P.03</span>
       <span class="q-text"><span class="task-badge badge-cli">systemd</span>Manage running processes and control system services on RHEL 9</span>
-      <span class="q-marks marks-practical">7 M</span>
+      <span class="q-marks marks-practical">6 M</span>
     </div>
     <div class="task-block">
       <ul class="task-steps">
@@ -480,7 +467,7 @@
     </div>
     <div class="task-block">
       <ul class="task-steps">
-        <li><span class="step-num">01</span>List all network interfaces, their states, IP addresses, and MAC addresses. Use tools appropriate for RHEL 9 — <code>ifconfig</code> is deprecated.</li>
+        <li><span class="step-num">01</span>List all network interfaces, their states, IP addresses, and MAC addresses.</li>
         <li><span class="step-num">02</span>Display the routing table and identify the default gateway. Explain to the evaluator what would happen to outbound traffic if this route were absent.</li>
         <li><span class="step-num">03</span>List all listening TCP ports with the name of the process bound to each. Identify which service is listening on port 80.</li>
         <li><span class="step-num">04</span>Test external connectivity to <code>8.8.8.8</code> with 5 ICMP packets and trace the full network path to the same address. Show both outputs to the evaluator.</li>
